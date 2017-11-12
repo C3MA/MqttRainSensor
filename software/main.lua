@@ -1,5 +1,5 @@
 -- The Mqtt logic
-m = mqtt.Client("ESP8266", 120, "user", "pass")
+m = mqtt.Client("ESP8266_RainSensor", 120, "user", "pass")
 
 global_c=nil
 global_s=nil
