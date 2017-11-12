@@ -4,13 +4,13 @@ ESP8266 controlled rain sensor monitoring
 Based on the nodemcu-firmware
 
 ## Interface
+
 1. Switch
 2. Wifi
   1. Mqtt
   2. TCP Debugging interface
 
 ## Setup
-
 The rain sensor must be connected to **GPIO2**
 
 ## Debug Mode
