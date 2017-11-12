@@ -2,9 +2,15 @@
 wifi.setmode(wifi.STATION)
 wifi.sta.config("SSID","PASSWORD")
 
-maintenanceMode=0
--- Use: tmr.stop(6) to abort
-print("Autostart in 5 Seconds. ")
-tmr.alarm(6, 5000, 1, function()
-    dofile("main.lua")
-end)
+if (file.open("main.lua")) then
+    print("Compiling ...")
+    node.compile("main.lua")
+    file.remove("main.lua")
+    node.restart()
+else
+    -- Use: tmr.stop(6) to abort
+    print("Autostart in 5 Seconds. ")
+    tmr.alarm(6, 5000, 1, function()
+        dofile("main.lc")
+    end)
+end

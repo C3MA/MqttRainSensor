@@ -64,7 +64,7 @@ end
 m:on("connect", mqttsubscribe)
 m:on("offline", function(con) 
     print ("offline")
-    node.restart()
+    restartnode()
 end)
 m:on("message", function(conn, topic, data)
    if topic=="/room/rainsensor/debug" then
@@ -79,8 +79,8 @@ end)
 tmr.alarm(0, 100, 1, function()
   if wifi.sta.status() ~= 5 then
      print("Connecting to AP...")
-    -- sleep, if no wifi after 10seconds runtime
-    if tmr.now() > 10000000 then
+    -- sleep, if no wifi after 30seconds runtime
+    if tmr.now() > 30000000 then
       tmr.stop(0)
       restartnode()
      end
