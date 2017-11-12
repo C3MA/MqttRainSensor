@@ -11,7 +11,8 @@ Based on the nodemcu-firmware
   2. TCP Debugging interface
 
 ## Setup
-The rain sensor must be connected to **GPIO2**
+The rain sensor must be connected to **GPIO2**.
+The input is internal pulled up to 3.3V. In order to activate it, the pin must be pulled to **GND**.
 
 ## Debug Mode
 Activate the debug Mode, with your PC (mosqiutto-client required):
