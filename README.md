@@ -17,8 +17,9 @@ The input is internal pulled up to 3.3V. In order to activate it, the pin must b
 ## Debug Mode
 Activate the debug Mode, with your PC (mosqiutto-client required):
 ```
-mosquitto_pub -h 10.23.42.10 -r -t "/room/rainsensor/debug" -m "enabled"
+mosquitto_pub -h 10.23.42.10 -t "/room/rainsensor/debug" -m "enabled"
 ```
+Then the device is accessable via **telnet** via the published IP address on port 2323
 
 ## Upgrade
 The code must be filled with the correct passwords:

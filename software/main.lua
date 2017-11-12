@@ -2,27 +2,37 @@
 m = mqtt.Client("ESP8266", 120, "user", "pass")
 
 global_c=nil
+global_s=nil
+function startTelnetServer()
+    if (global_s == nil) then
+        print("Maintenance Mode starting...")
+        global_s=net.createServer(net.TCP, 180)
+        global_s:listen(2323,function(c)
+        global_c=c
+        function s_output(str)
+          if(global_c~=nil)
+             then global_c:send(str)
+          end
+        end
+        node.output(s_output, 0)
+        c:on("receive",function(c,l)
+          node.input(l)
+        end)
+        c:on("disconnection",function(c)
+          node.output(nil)
+          global_c=nil
+        end)
+        print("Welcome to the Rainsensor")
+        end)
+    else
+        print ("Telnet server already started")
+    end
+end
+
+
 function restartnode()
  if maintenanceMode==1 then
-    print("Maintenance Mode starting...")
-    s=net.createServer(net.TCP, 180)
-	s:listen(2323,function(c)
-	global_c=c
-	function s_output(str)
-	  if(global_c~=nil)
-	     then global_c:send(str)
-	  end
-	end
-	node.output(s_output, 0)
-	c:on("receive",function(c,l)
-	  node.input(l)
-	end)
-	c:on("disconnection",function(c)
-	  node.output(nil)
-	  global_c=nil
-	end)
-	print("Welcome to the Rainsensor")
-	end)
+    startTelnetServer()
  else
      print("Rebooting")
      node.restart()
@@ -40,7 +50,7 @@ function mqttsubscribe()
  gpio.mode(4, gpio.INPUT)
  gpio.write(4, gpio.HIGH) -- internal pullup
  -- Send the status of the rainsensor each 30 seconds
- tmr.alarm(3,3000, 1, function()
+ tmr.alarm(3,30000, 1, function()
         -- Read GPIO2
         if ( gpio.read(4) == gpio.LOW) then
             rainState="raining"
@@ -60,6 +70,7 @@ m:on("message", function(conn, topic, data)
    if topic=="/room/rainsensor/debug" then
      if data=="enabled" then
         maintenanceMode=1
+        startTelnetServer()
      end
    end
 end)
