@@ -38,10 +38,11 @@ function mqttsubscribe()
     end)
  -- Used GPIO2 for the sensor
  gpio.mode(4, gpio.INPUT)
+ gpio.write(4, gpio.HIGH) -- internal pullup
  -- Send the status of the rainsensor each 30 seconds
- tmr.alarm(3,30000, 0, function()
+ tmr.alarm(3,3000, 1, function()
         -- Read GPIO2
-        if ( gpio.read(4) ) then
+        if ( gpio.read(4) == gpio.LOW) then
             rainState="raining"
         else
             rainState="dry"
@@ -70,7 +71,7 @@ tmr.alarm(0, 100, 1, function()
     -- sleep, if no wifi after 10seconds runtime
     if tmr.now() > 10000000 then
       tmr.stop(0)
-      restartnode() 
+      restartnode()
      end
   else
      tmr.stop(0)
