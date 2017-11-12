@@ -10,7 +10,7 @@ if (file.open("main.lua")) then
 else
     -- Use: tmr.stop(6) to abort
     print("Autostart in 5 Seconds. ")
-    tmr.alarm(6, 5000, 1, function()
+    tmr.alarm(6, 5000, 0, function()
         dofile("main.lc")
     end)
 end
