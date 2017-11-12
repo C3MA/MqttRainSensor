@@ -2,7 +2,7 @@
 m = mqtt.Client("ESP8266", 120, "user", "pass")
 
 global_c=nil
-function sleepnode()
+function restartnode()
  if maintenanceMode==1 then
     print("Maintenance Mode starting...")
     s=net.createServer(net.TCP, 180)
@@ -21,36 +21,42 @@ function sleepnode()
 	  node.output(nil)
 	  global_c=nil
 	end)
-	print("Welcome to the Switch")
+	print("Welcome to the Rainsensor")
 	end)
  else
-     print("Good Night")
-     v=node.readvdd33()
-     print(v)
-     tmr.alarm(4,400,0,function()
-      m:publish("/room/switch/voltage",v,0,0,node.dsleep(0))
-     end)
-end
+     print("Rebooting")
+     node.restart()
+ end
 end
 
 function mqttsubscribe()
  tmr.alarm(1,50,0,function() 
-        m:subscribe("/room/light/#",0, function(conn) print("subscribe /room/light success") end) 
+        m:subscribe("/room/rainsensor/#",0, function(conn) 
+            print("subscribe /room/rainsensor success") 
+            m:publish("/room/rainsensor/"  .. "ip",wifi.sta.getip(),0,0)
+        end) 
     end)
+ -- Used GPIO2 for the sensor
+ gpio.mode(4, gpio.INPUT)
+ -- Send the status of the rainsensor each 30 seconds
+ tmr.alarm(3,30000, 0, function()
+        -- Read GPIO2
+        if ( gpio.read(4) ) then
+            rainState="raining"
+        else
+            rainState="dry"
+        end
+        m:publish("/room/rainsensor/"  .. "state",rainState,0,0)
+    end)
+    
 end
 m:on("connect", mqttsubscribe)
-m:on("offline", function(con) print ("offline") end)
+m:on("offline", function(con) 
+    print ("offline")
+    node.restart()
+end)
 m:on("message", function(conn, topic, data)
-   if topic=="/room/light/workshop/state" and sollich==1 then
-    sollich=0
-    if data=="on" then
-     print("Es war An!")
-     m:publish("/room/light/workshop/command","off",0,0,sleepnode)
-    else 
-     print("Es war Aus!")
-     m:publish("/room/light/workshop/command","on",0,0,sleepnode)
-    end
-   elseif topic=="/room/light/debug" then
+   if topic=="/room/rainsensor/debug" then
      if data=="enabled" then
         maintenanceMode=1
      end
@@ -61,11 +67,10 @@ end)
 tmr.alarm(0, 100, 1, function()
   if wifi.sta.status() ~= 5 then
      print("Connecting to AP...")
--- sleep, if no wifi after 10seconds runtime
+    -- sleep, if no wifi after 10seconds runtime
     if tmr.now() > 10000000 then
       tmr.stop(0)
-      print("No Wifi - Damn - Good night")
-      sleepnode() 
+      restartnode() 
      end
   else
      tmr.stop(0)
@@ -73,5 +78,3 @@ tmr.alarm(0, 100, 1, function()
      m:connect("10.23.42.10",1883,0)
   end
 end)
-
-
