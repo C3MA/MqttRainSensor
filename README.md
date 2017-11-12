@@ -1,6 +1,5 @@
 # RainSensor
 ESP8266 controlled rain sensor monitoring
-
 Based on the nodemcu-firmware
 
 ## Interface
@@ -11,6 +10,8 @@ Based on the nodemcu-firmware
   2. TCP Debugging interface
 
 ## Setup
+The first (blue) ESP-01 was used as hardware.
+
 The rain sensor must be connected to **GPIO2**.
 The input is internal pulled up to 3.3V. In order to activate it, the pin must be pulled to **GND**.
 
