@@ -48,11 +48,11 @@ function mqttsubscribe()
     end)
  -- Used GPIO2 for the sensor
  gpio.mode(4, gpio.INPUT)
- gpio.write(4, gpio.HIGH) -- internal pullup
+ gpio.write(4, gpio.LOW) -- internal pulldown
  -- Send the status of the rainsensor each 30 seconds
  tmr.alarm(3,30000, 1, function()
         -- Read GPIO2
-        if ( gpio.read(4) == gpio.LOW) then
+        if ( gpio.read(4) == gpio.HIGH) then
             rainState="raining"
         else
             rainState="dry"

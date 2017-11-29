@@ -13,7 +13,7 @@ Based on the nodemcu-firmware
 The first (blue) ESP-01 was used as hardware.
 
 The rain sensor must be connected to **GPIO2**.
-The input is internal pulled up to 3.3V. In order to activate it, the pin must be pulled to **GND**.
+The input is internal pulled up to **GND**. In order to activate it, the pin must be pulled to **3.3V**.
 
 ## Debug Mode
 Activate the debug Mode, with your PC (mosqiutto-client required):
